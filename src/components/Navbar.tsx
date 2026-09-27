@@ -1,0 +1,242 @@
+import React, { useState, useEffect } from 'react';
+import { Volume2, VolumeX, Menu, X, Sparkles } from 'lucide-react';
+import { AnnouncementBanner } from './AnnouncementBanner';
+import { isSoundEnabled, toggleSound, playCyberClick } from '../utils/audio';
+
+// Static asset path for files in your public/images/ directory
+const CSlogo = '/images/cipher-logo.webp';
+
+interface NavbarProps {
+  onOpenJoin: () => void;
+  onReplayIntro?: () => void;
+  onOpenAdmin?: () => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ onOpenJoin, onReplayIntro }) => {
+  const [scrolled, setScrolled] = useState(false);
+  const [soundOn, setSoundOn] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
+
+  useEffect(() => {
+    setSoundOn(isSoundEnabled());
+
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 40);
+
+      const sections = ['home', 'about', 'leadership', 'events', 'join'];
+      for (const s of sections) {
+        const el = document.getElementById(s);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 180 && rect.bottom >= 180) {
+            setActiveSection(s);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleSoundToggle = () => {
+    const newState = toggleSound();
+    setSoundOn(newState);
+  };
+
+  const navLinks = [
+    { name: 'HOME', href: '#home', id: 'home' },
+    { name: 'ABOUT', href: '#about', id: 'about' },
+    { name: 'LEADERSHIP', href: '#leadership', id: 'leadership' },
+    { name: 'EVENTS', href: '#events', id: 'events' },
+    { name: 'JOIN', href: '#join', id: 'join' },
+  ];
+
+  const handleNavClick = (href: string) => {
+    playCyberClick();
+    setMobileMenuOpen(false);
+    const target = document.querySelector(href);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <header
+      id="main-site-header"
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 font-mono ${
+        scrolled
+          ? 'bg-[#050806]/95 backdrop-blur-md border-b border-emerald-950/80 shadow-lg shadow-black/50'
+          : 'bg-[#050806]/85 backdrop-blur-sm border-b border-emerald-950/40'
+      }`}
+    >
+      {/* Real-time Campus Broadcast Notification Banner */}
+      <AnnouncementBanner onOpenJoin={onOpenJoin} />
+
+      <div
+        className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-all duration-300 ${
+          scrolled ? 'py-2.5' : 'py-3.5'
+        }`}
+      >
+        {/* Brand / Logo */}
+        <a
+          href="#home"
+          onClick={(e) => {
+            e.preventDefault();
+            handleNavClick('#home');
+          }}
+          className="flex items-center gap-3 group cursor-pointer"
+        >
+          <div className="relative w-24 h-14 flex items-center justify-center bg-transparent overflow-hidden">
+  <img
+    src={CSlogo}
+    alt="CIPHER Emblem Logo"
+    className="w-full h-full object-contain mix-blend-screen transition-transform duration-300 group-hover:scale-110"
+  />
+</div>
+
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2">
+              <span className="font-extrabold text-base tracking-widest text-emerald-400 group-hover:text-emerald-300 transition-colors">
+                CIPHER
+              </span>
+              <span className="text-[10px] px-1.5 py-0.5 bg-emerald-950/80 border border-emerald-800 text-emerald-300 rounded font-semibold tracking-wider">
+                SJEC
+              </span>
+            </div>
+           
+          </div>
+        </a>
+
+        {/* Center: Desktop Nav Links */}
+        <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
+          {navLinks.map((link) => {
+            const isActive = activeSection === link.id;
+            return (
+              <a
+                key={link.id}
+                href={link.href}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick(link.href);
+                }}
+                className={`relative px-3 py-1.5 text-xs font-semibold tracking-wider rounded transition-all duration-200 cursor-pointer ${
+                  isActive
+                    ? 'text-emerald-300 bg-emerald-950/60 border border-emerald-800/60 shadow-[0_0_10px_rgba(34,197,94,0.2)]'
+                    : 'text-emerald-500/80 hover:text-emerald-300 hover:bg-emerald-950/30'
+                }`}
+              >
+                {link.name}
+                {isActive && (
+                  <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-emerald-400 rounded-full shadow-[0_0_6px_#22c55e]" />
+                )}
+              </a>
+            );
+          })}
+        </nav>
+
+        {/* Right Actions */}
+        <div className="hidden md:flex items-center gap-2 lg:gap-3">
+          {/* Audio toggle button */}
+          <button
+            onClick={handleSoundToggle}
+            title={soundOn ? 'Mute Cyber Audio' : 'Unmute Cyber Audio'}
+            className="p-2 text-emerald-500/70 hover:text-emerald-300 border border-emerald-900/50 hover:border-emerald-700 bg-[#060b08]/80 rounded transition-all cursor-pointer"
+          >
+            {soundOn ? <Volume2 className="w-4 h-4 text-emerald-400" /> : <VolumeX className="w-4 h-4 text-emerald-700" />}
+          </button>
+
+          {/* Replay Intro */}
+          {onReplayIntro && (
+            <button
+              onClick={() => {
+                playCyberClick();
+                onReplayIntro();
+              }}
+              title="Replay Terminal Bootloader Intro"
+              className="p-2 text-emerald-500/70 hover:text-emerald-300 border border-emerald-900/50 hover:border-emerald-700 bg-[#060b08]/80 rounded transition-all cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+            </button>
+          )}
+
+          {/* Join Cipher CTA */}
+          <button
+            id="nav-join-cipher-btn"
+            onClick={() => {
+              playCyberClick();
+              onOpenJoin();
+            }}
+            className="px-4 py-1.5 text-xs font-bold tracking-wider uppercase text-emerald-300 bg-emerald-950/60 hover:bg-emerald-800/50 border border-emerald-600/80 hover:border-emerald-400 rounded transition-all duration-200 shadow-[0_0_12px_rgba(34,197,94,0.25)] hover:shadow-[0_0_18px_rgba(34,197,94,0.5)] active:scale-95 cursor-pointer"
+          >
+            JOIN CIPHER
+          </button>
+        </div>
+
+        {/* Mobile menu */}
+        <div className="flex md:hidden items-center gap-2">
+          <button
+            onClick={() => {
+              playCyberClick();
+              setMobileMenuOpen(!mobileMenuOpen);
+            }}
+            className="p-2 text-emerald-400 border border-emerald-900 bg-[#060b08] rounded cursor-pointer"
+            aria-label="Toggle Navigation Menu"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Drawer */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-emerald-950 bg-[#050806]/98 backdrop-blur-xl px-4 py-6 space-y-3">
+          <div className="flex flex-col space-y-2">
+            {navLinks.map((link) => (
+              <a
+                key={link.id}
+                href={link.href}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick(link.href);
+                }}
+                className={`px-3 py-2 text-sm font-semibold rounded ${
+                  activeSection === link.id
+                    ? 'text-emerald-300 bg-emerald-950/80 border border-emerald-800'
+                    : 'text-emerald-400/80 hover:text-emerald-300'
+                }`}
+              >
+                {link.name}
+              </a>
+            ))}
+          </div>
+
+          <div className="pt-4 border-t border-emerald-950/80 flex items-center justify-between gap-3">
+            <button
+              onClick={handleSoundToggle}
+              className="flex items-center gap-2 px-3 py-2 text-xs border border-emerald-900 rounded text-emerald-400 cursor-pointer"
+            >
+              {soundOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+              <span>{soundOn ? 'Sound On' : 'Sound Off'}</span>
+            </button>
+
+            <button
+              onClick={() => {
+                playCyberClick();
+                setMobileMenuOpen(false);
+                onOpenJoin();
+              }}
+              className="flex-1 py-2 text-xs font-bold uppercase tracking-wider text-black bg-emerald-500 hover:bg-emerald-400 rounded text-center cursor-pointer"
+            >
+              JOIN CIPHER
+            </button>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+};
+
+export default Navbar;

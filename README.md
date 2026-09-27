@@ -1,50 +1,54 @@
-# Cipher Build Blazer — Phase 2
-
-Live build phase for **Cipher (CSE Association)'s** track of the Build Blazer event at SJEC.
-
-This repo is the starting point for Phase 2, where third-year teams fork it and build the winning design into a live, deployed website.
-
-## How this works
-
-1. **Fork** this repository into your own GitHub account.
-2. Clone your fork locally.
-3. Implement the winning Figma design assigned to your team.
-4. Commit early and often — the process matters as much as the result.
-5. Deploy your build (Vercel, Netlify, GitHub Pages, or similar).
-6. Submit your fork link + live deployment link before the deadline.
-
-## Getting started
-
-```bash
-git clone https://github.com/<your-username>/cipher-buildblazer-p2.git
-cd cipher-buildblazer-p2
-# install dependencies here once the stack is decided
-```
-
-## Team
-
-| Role | Name |
-|------|------|
-| Team Lead | TBD |
-| Members | TBD |
-
-## Design reference
-
-Link the Phase 1 Figma file here once assigned.
-
-## Tech stack
-
-To be filled in by each team (e.g. React, Tailwind, Next.js).
-
-## Deployment
-
-Live link: _add once deployed_
-
-## Rules
-
-- Fork, don't clone-and-push directly to this repo.
-- Stick to the assigned Figma design as closely as possible.
-- Submit via pull request or the link-submission form (whichever the organizers specify).
+# CIPHER — Student Association of CSE
+> **St Joseph Engineering College (SJEC)**  
+> *Official platform for the Student Association of the Department of Computer Science & Engineering.*
 
 ---
-Organized by **Cipher (CSE Association)**, SJEC, in collaboration with **AgentBlazer Club**.
+
+## ⚡ Overview
+
+**CIPHER** is an interactive web platform for the CSE Student Association at SJEC. It highlights departmental leadership, technical workshops, flagship hackathons, and student initiatives with an interactive cyberpunk interface.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend**: React 19, TypeScript, Vite
+- **Styling**: Tailwind CSS v4
+- **Animation & Icons**: Motion, Lucide React
+- **Graphics & Audio**: HTML5 Canvas, Web Audio API
+
+---
+
+## 🚀 Getting Started
+
+### 1. Installation
+```bash
+npm install
+```
+
+### 2. Run Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### 3. Build for Production
+```bash
+npm run build
+```
+
+---
+
+## 📜 Available Scripts
+
+- `npm run dev` — Run development server on port 3000
+- `npm run build` — Build production bundle to `dist/`
+- `npm run preview` — Locally preview the production build
+- `npm run lint` — Type-check codebase with `tsc --noEmit`
+
+---
+
+## 📄 License
+
+MIT © CIPHER, Department of Computer Science & Engineering, SJEC.
+
